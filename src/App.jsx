@@ -1,6 +1,5 @@
-import {Button} from "./components/ Button.jsx";
 import Display from "./components/Display.jsx";
-
+import {Button} from "./components/ Button.jsx";
 import {CalculatorProvider} from "./contexts/Calculator.jsx";
 
 function App() {

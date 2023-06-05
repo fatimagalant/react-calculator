@@ -41,14 +41,14 @@ export function useCalculatorDispatch() {
 function calculatorReducer(event, action) {
     switch (action.type) {
         case "input":
-            return {event, evaluationString: `${event.evaluationString}${action.input}`};
+            return {...event, evaluationString: `${event.evaluationString}${action.input}`};
         case "clear": {
-            return {event, evaluationString: '', result: 0};
+            return {...event, evaluationString: '', result: 0};
         }
         case "evaluate":
         {
             const result = evaluate(event.evaluationString);
-            return {event, evaluationString: '', result};
+            return {...event, evaluationString: '', result};
         }
 
         default: {
