@@ -1,4 +1,4 @@
-import {createContext, useContext, useReducer} from 'react';
+import {createContext, useContext, useEffect, useReducer} from 'react';
 import {evaluate} from "mathjs";
 import PropTypes from "prop-types";
 
@@ -6,16 +6,26 @@ const CalculatorContext = createContext(null);
 const CalculatorDispatch = createContext(null);
 
 const initialCalculator = {
-    history: [],
+    history: [], // Empty array to store the history
     evaluationString: "",
     result: 0,
 };
+
 
 export function CalculatorProvider({children}) {
     const [event, dispatch] = useReducer(
         calculatorReducer,
         initialCalculator
     );
+
+    const keydownHandler = (event) => {
+        if (Number(event.key) > 0) {
+            dispatch({ type: 'input', input: event.key });
+        }
+    }
+    useEffect(() => {
+        document.addEventListener("keydown", keydownHandler)
+    }, [])
 
     return (
         <CalculatorContext.Provider value={event}>
@@ -41,18 +51,19 @@ export function useCalculatorDispatch() {
 function calculatorReducer(event, action) {
     switch (action.type) {
         case "input":
-            return {...event, evaluationString: `${event.evaluationString}${action.input}`};
-        case "clear": {
-            return {...event, evaluationString: '', result: 0};
-        }
-        case "evaluate":
-        {
+            return { ...event, evaluationString: `${event.evaluationString}${action.input}` };
+        case "clear":
+            return { ...event, evaluationString: "", result: 0 };
+        case "evaluate": {
             const result = evaluate(event.evaluationString);
-            return {...event, evaluationString: '', result};
+            const newHistoryItem = {
+                evaluationString: event.evaluationString,
+                result: result,
+            };
+            const newHistory = [...event.history, newHistoryItem];
+            return { ...event, evaluationString: "", result: result, history: newHistory };
         }
-
-        default: {
-            throw Error('Unknown action: ' + action.type);
-        }
+        default:
+            throw Error("Unknown action: " + action.type);
     }
 }

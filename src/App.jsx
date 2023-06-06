@@ -1,7 +1,11 @@
+// import {useEffect} from "react";
 import Display from "./components/Display.jsx";
+import {createPortal} from "react-dom";
 import {Button} from "./components/ Button.jsx";
+import History from "../src/components/History";
 import {CalculatorProvider} from "./contexts/Calculator.jsx";
 
+const sidebarContentEl = document.querySelector('aside#history');
 function App() {
 
     return (
@@ -31,6 +35,10 @@ function App() {
                     <Button buttonLabel={"0"} className={"col-span-2"} style={"amber"}/>
                     <Button buttonLabel={"."} style={"slate"}/>
                 </div>
+                    {createPortal(
+                        <History />,
+                        sidebarContentEl
+                    )}
                 </CalculatorProvider>
             </div>
         </div>
